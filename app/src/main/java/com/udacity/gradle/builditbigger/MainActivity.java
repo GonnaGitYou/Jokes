@@ -7,6 +7,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,9 +26,10 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    Jester jester = new Jester();
-
     private static final String JOKE = "joke";
+
+    private IJokeListener jokeListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +61,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view){
-        //Toast.makeText(this, jester.tellAJoke(), Toast.LENGTH_LONG).show();
-//        Intent intent = new Intent(this, JokeActivity.class);
-//        intent.putExtra(JOKE,jester.tellAJoke());
-//        startActivity(intent);
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, null));
+         new EndpointsAsyncTask().execute(new Pair<Context, String>(this, null));
+    }
+    /*
+    We will use an interface for testing purposes.
+     */
+    public interface IJokeListener{
+        void downloadCompleted(String _joke);
     }
 
-    class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+    public MainActivity(IJokeListener iJokeListener){
+        Log.d("Main","Made it to constructor.");
+        jokeListener = iJokeListener;
+    }
+
+    public MainActivity(){
+
+    }
+
+    public class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
         private MyApi myApiService = null;
         private Context context;
 
@@ -105,7 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+
+            if(jokeListener != null) jokeListener.downloadCompleted(result);
+
             Intent intent = new Intent(getApplicationContext(), JokeActivity.class);
             intent.putExtra(JOKE,result);
             startActivity(intent);
