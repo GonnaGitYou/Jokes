@@ -17,10 +17,10 @@ import java.net.URL;
 public class Jester {
     public String tellAJoke(){
         String joke = null;
-        long numJoke = 100;
+        long numJoke = 60;
 
         do{
-            //Get a random number between 1 and 100
+            //Get a random number between 1 and 60
             numJoke = Math.round(numJoke * Math.random());
         }while(numJoke < 1);
 

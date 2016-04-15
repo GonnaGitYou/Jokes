@@ -11,4 +11,4 @@ dependencies {
     compile 'junit:junit:4.12'
 }
 
-sourceCompatibility = 1.7
+sourceCompatibility = JavaVersion.VERSION_1_7
